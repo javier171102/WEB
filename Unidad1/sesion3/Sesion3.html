@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diseño Minimalista con Barra Lateral</title>
+    <style>
+        body,
+        html {
+            background-image: url('images/6106991.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow-y: hidden; 
+        }
+
+        .container {
+            display: flex;
+            height: 100vh; 
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: rgba(0, 0, 0, 0.7); 
+            padding: 20px;
+            border-right: 1px solid #ccc;
+            height: auto; 
+            position: relative;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 50px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 26px -18px inset;
+            overflow-y: auto; 
+            scrollbar-width: none;
+            max-height: calc(100vh - 40px); 
+            position: relative; 
+        }
+
+        
+        .content p,
+        .content h1,
+        .content h2,
+        .content h3,
+        .content h4,
+        .content h5,
+        .content h6 {
+            color: white; 
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e0e0e0;
+            text-align: left;
+            cursor: pointer;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 0.5em;
+            background: #212121;
+            border: 1px solid #212121;
+            transition: all 0.3s;
+            box-shadow: 6px 6px 12px #000, -6px -6px 12px #2f2f2f;
+        }
+
+        .btn:hover {
+            color: #666;
+            box-shadow: inset 4px 4px 12px #000, inset -4px -4px 12px #1f1f1f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            
+        </div>
+        <div class="content" id="contentArea">
+            Selecciona una tarea para comenzar.
+        </div>
+    </div>
+
+    <script>
+        const tasks = ['Formulario 1', 'Formulario 2', 'Formulario 3', 'Formulario 4', 'Formulario 5'];
+        let currentTaskIndex = -1;
+
+        function createButtons() {
+            const sidebar = document.getElementById('sidebar');
+            tasks.forEach((task, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.textContent = task;
+
+                
+                button.onclick = () => {
+                    loadContent(index); 
+                };
+
+                sidebar.appendChild(button);
+            });
+
+           
+            const backButton = document.createElement('button');
+            backButton.className = 'btn'; 
+            backButton.textContent = 'Regresar';
+            backButton.onclick = () => {
+                window.history.back(); 
+            };
+            sidebar.appendChild(backButton);
+        }
+
+        function loadContent(index) {
+            currentTaskIndex = index;
+            updateActiveButton();
+
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    
+                    document.getElementById('contentArea').innerHTML = this.responseText;
+                }
+            };
+            
+            xhr.open("GET", `Formularios/F${index + 1}.html?tarea=${encodeURIComponent(tasks[index])}`, true);
+            xhr.send();
+
+            document.getElementById('contentArea').innerHTML = `Cargando ${tasks[index]}...`;
+        }
+
+        function updateActiveButton() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                btn.classList.toggle('active', index === currentTaskIndex);
+            });
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', createButtons);
+    </script>
+</body>
+</html>
